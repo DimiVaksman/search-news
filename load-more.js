@@ -1,6 +1,6 @@
 
 const URL = 'https://hn.algolia.com/api/v1';
-const hitsPerPage = 5;
+const hitsPerPage = 30;
 
 let items = 0;
 let pages = 0;
@@ -15,8 +15,12 @@ const refs = {
 
 
 const render = () => {
-const list = items.map(({title, url}) => `<li><a href="${url}"target="_blank">${title}</a></li>`,).join('')
-    refs.list.innerHTML = '';
+const list = items.map(({title, url}) => `<li><a href="${url}"target="_blank">${title}</a></li>`,).join('');
+
+if(!page){
+    refs.list.innerHTML = ''; 
+}
+
     refs.list.insertAdjacentHTML('beforeend' , list)
 }
 
@@ -63,3 +67,12 @@ const handleLoadMore = e => {
 
 refs.form.addEventListener('submit', handleSubmit);
 refs.loadMore.addEventListener('click', handleLoadMore);
+
+const handleIntersection = (entities) => {
+    const [button] = entities
+
+}
+
+const observer = new IntersectionObserver(handleIntersection);
+
+observer.observe(refs.loadMore)
