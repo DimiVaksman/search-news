@@ -1,77 +1,65 @@
 
-// const URL = 'https://hn.algolia.com/api/v1';
-// const hitsPerPage = 5;
+const URL = 'https://hn.algolia.com/api/v1';
+const hitsPerPage = 5;
 
-// let items = 0;
-// let pages = 0;
-// let page = 0;
-// let query = ''
+let items = 0;
+let pages = 0;
+let page = 0;
+let query = ''
 
-// const refs = {
-//     form: document.querySelector('.form'),
-//     list: document.querySelector('.list'),
-//     buttons: document.querySelector('.buttons')
-// }
+const refs = {
+    form: document.querySelector('.form'),
+    list: document.querySelector('.list'),
+    loadMore: document.querySelector('.load-more')
+}
 
-// console.log(refs.buttons)
 
-// const render = () => {
-// const list = items.map(({title, url}) => `<li><a href="${url}"target="_blank">${title}</a></li>`,).join('')
-//     refs.list.innerHTML = '';
-//     refs.list.insertAdjacentHTML('beforeend' , list)
-// }
+const render = () => {
+const list = items.map(({title, url}) => `<li><a href="${url}"target="_blank">${title}</a></li>`,).join('')
+    refs.list.innerHTML = '';
+    refs.list.insertAdjacentHTML('beforeend' , list)
+}
 
-// const renderButtons = () => {
-// const buttons = Array(pages)
-// .fill()
-// .map((_, idx) => `<button ${idx === page ? 'class="page active"' : 'class="page"' } data-page=${idx}>${idx+1}</button>`)
-// .join('');
 
-// refs.buttons.innerHTML = '';
-// refs.buttons.insertAdjacentHTML('beforeend' , buttons)
-
-// }
-// const fetchNews = () => {
-//     fetch(`${URL}/search?query=${query}&hitsPerPage=${hitsPerPage}&page=${page}`)
-//     .then(res => {
-//         if(res.ok){
-//             return res.json();
-//         }
+const fetchNews = () => {
+    fetch(`${URL}/search?query=${query}&hitsPerPage=${hitsPerPage}&page=${page}`)
+    .then(res => {
+        if(res.ok){
+            return res.json();
+        }
     
-//         throw new Error (' cant load the itmes')
-//     })
-// .then(date => {
-//     items = date.hits;
-//     pages = date.nbPages;
+        throw new Error (' cant load the itmes')
+    })
+.then(date => {
+    items = date.hits;
+    pages = date.nbPages;
 
-//     render();
-//     renderButtons();
-// })
-// .catch(error => {
-//     console.log('error' , error)
-// })
+    render();
+})
+.catch(error => {
+    console.log('error' , error)
+})
 
-// }
+}
 
-// const handleSubmit = (e) => {
+const handleSubmit = (e) => {
 
-// const {value} = e.target.elements.query
+const {value} = e.target.elements.query
 
-// e.preventDefault();
-// if(query === value || value){
-//     return;
-// }
-// query = value;
-// page = 0; 
-// fetchNews()
-// }
+e.preventDefault();
+if(query === value || !value){
+    return;
+}
+query = value;
+page = 0; 
+fetchNews()
+}
 
-// const handlePageClick = (e) => {
+const handleLoadMore = e => {
 
-//     page = Number(e.target.dataset.page)
+    page++
+    fetchNews()
+}
 
-//     fetchNews()
-// }
-
-// refs.form.addEventListener('submit', handleSubmit);
-// refs.buttons.addEventListener('click', handlePageClick);
+refs.form.addEventListener('submit', handleSubmit);
+refs.loadMore.addEventListener('click', handleLoadMore);
